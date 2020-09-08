@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5B0FB2B1-396A-4A40-B01B-8696AC870DDA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>HellowWorldForm</RootNamespace>
-    <AssemblyName>HellowWorldForm</AssemblyName>
+    <RootNamespace>HelloWorldForm</RootNamespace>
+    <AssemblyName>HelloWorldForm</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -65,6 +65,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
