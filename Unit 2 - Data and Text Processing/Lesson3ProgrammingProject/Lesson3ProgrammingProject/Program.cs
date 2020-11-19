@@ -39,17 +39,28 @@ namespace Lesson3ProgrammingProject
                     Console.WriteLine("Invalid Number!");
                 }
 
+                Console.Clear();
+
                 switch (pick)
                 {
+                    case 7:
+                        exit = true;
+                        break;
                     case 1:
+                        Console.WriteLine("Mortgage Monthly Payment Calculator\n");
                         int amountBorrowed = GetUserInteger("Amount borrowed (in dollars)");
                         int termsOfMortgage = GetUserInteger("Term of mortgage (in years)");
                         int yearlyInterestRate = GetUserInteger("Yearly interest rate (as a percentage)");
 
                         MortgageMonthlyPaymentCalculator(amountBorrowed, termsOfMortgage, yearlyInterestRate);
-
                         break;
                     case 2:
+                        Console.WriteLine("Remaining Mortgage Loan Balance Calculator\n");
+                        int amountBorrowed2 = GetUserInteger("Amount borrowed (in dollars)");
+                        int termsOfMortgage2 = GetUserInteger("Term of mortgage (in years)");
+                        int yearlyInterestRate2 = GetUserInteger("Yearly interest rate (as a percentage)");
+                        int numberOfMonthpyPaymentsPaid2 = GetUserInteger("Number of monthly payments paid");
+                        RemainingMortgageLoanBalanceCalculator(amountBorrowed2, termsOfMortgage2, yearlyInterestRate2, numberOfMonthpyPaymentsPaid2);
                         break;
                     case 3:
                         break;
@@ -59,10 +70,12 @@ namespace Lesson3ProgrammingProject
                         break;
                     case 6:
                         break;
-                    case 7:
-                        exit = true;
-                        break;
                 }
+
+                if (pick != 7)
+                    WaitToContinue();
+
+                Console.Clear();
             }
 
             Console.WriteLine("Hello World!");
@@ -81,6 +94,11 @@ namespace Lesson3ProgrammingProject
 
             return i;
         }
+        static void WaitToContinue()
+        {
+            Console.WriteLine("Press Any Key to Continue...");
+            Console.ReadLine();
+        }
 
         static void MortgageMonthlyPaymentCalculator(int p, int n, int r)
         {
@@ -94,6 +112,15 @@ namespace Lesson3ProgrammingProject
             Console.WriteLine("Total Amount Paid:       {0,20:c}", totalAmountPaid);
             Console.WriteLine("Total Interest Paid:     {0,20:c}", totalInterestPaid);
             Console.WriteLine();
+        }
+
+        static void RemainingMortgageLoanBalanceCalculator(int p, int n, int r, int m)
+        {
+            double rate = r / 100.0 / 12;
+            double months = n * 12;
+            double remainingMortgagePayment = p * ((Math.Pow(1 + rate, months) - Math.Pow(1 + rate, m)) / (Math.Pow(1 + rate, months) - 1));
+
+            Console.WriteLine("Remaining Mortgage Payment:     {0,20:c}", remainingMortgagePayment);
         }
         
     }
