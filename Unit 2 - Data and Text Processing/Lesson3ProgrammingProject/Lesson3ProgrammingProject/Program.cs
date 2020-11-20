@@ -48,21 +48,33 @@ namespace Lesson3ProgrammingProject
                         break;
                     case 1:
                         Console.WriteLine("Mortgage Monthly Payment Calculator\n");
-                        int amountBorrowed = GetUserInteger("Amount borrowed (in dollars)");
-                        int termsOfMortgage = GetUserInteger("Term of mortgage (in years)");
-                        int yearlyInterestRate = GetUserInteger("Yearly interest rate (as a percentage)");
 
-                        MortgageMonthlyPaymentCalculator(amountBorrowed, termsOfMortgage, yearlyInterestRate);
+                        int[] info = GetMorgageInfo();
+                        
+                        MortgageMonthlyPaymentCalculator(info[0], info[1], info[2]);
                         break;
                     case 2:
                         Console.WriteLine("Remaining Mortgage Loan Balance Calculator\n");
-                        int amountBorrowed2 = GetUserInteger("Amount borrowed (in dollars)");
-                        int termsOfMortgage2 = GetUserInteger("Term of mortgage (in years)");
-                        int yearlyInterestRate2 = GetUserInteger("Yearly interest rate (as a percentage)");
-                        int numberOfMonthpyPaymentsPaid2 = GetUserInteger("Number of monthly payments paid");
-                        RemainingMortgageLoanBalanceCalculator(amountBorrowed2, termsOfMortgage2, yearlyInterestRate2, numberOfMonthpyPaymentsPaid2);
+
+                        int[] info2 = GetMorgageInfo();
+
+                        int numberOfMonthpyPaymentsPaid = GetUserInteger("Number of monthly payments paid");
+
+                        Console.WriteLine("Remaining Mortgage Payment: {0,20:c}", RemainingMortgageLoanBalanceCalculator(info2[0], info2[1], info2[2], numberOfMonthpyPaymentsPaid));
                         break;
                     case 3:
+                        Console.WriteLine("Remaining Mortgage Loan Balance Calculator\n");
+
+                        int[] info3 = GetMorgageInfo();
+
+                        YearlyStatus[] remainingList = RemainingMortgageLoanBalanceYearlyReport(info3[0], info3[1], info3[2]);
+                        Console.WriteLine("          Balance Remaining          Total Amount Paid          Total Interest Paid");
+                        for (int i = 0; i < info3[1]; i++)
+                        {
+                            Console.WriteLine("Year {0,2} {1,19:C} {2,25:C} {3,27:C}", i + 1, remainingList[i].remainingMortgagePayment, remainingList[i].totalAmountPaid, remainingList[i].totalInterestPaid);
+                            Console.WriteLine();
+                        }
+                        
                         break;
                     case 4:
                         break;
@@ -94,6 +106,17 @@ namespace Lesson3ProgrammingProject
 
             return i;
         }
+
+        static int[] GetMorgageInfo()
+        {
+            int amountBorrowed = GetUserInteger("Amount borrowed (in dollars)");
+            int termsOfMortgage = GetUserInteger("Term of mortgage (in years)");
+            int yearlyInterestRate = GetUserInteger("Yearly interest rate (as a percentage)");
+
+            int[] result = { amountBorrowed, termsOfMortgage, yearlyInterestRate };
+            return result;
+        }
+
         static void WaitToContinue()
         {
             Console.WriteLine("Press Any Key to Continue...");
@@ -114,14 +137,46 @@ namespace Lesson3ProgrammingProject
             Console.WriteLine();
         }
 
-        static void RemainingMortgageLoanBalanceCalculator(int p, int n, int r, int m)
+        static double RemainingMortgageLoanBalanceCalculator(int p, int n, int r, int m)
         {
             double rate = r / 100.0 / 12;
             double months = n * 12;
             double remainingMortgagePayment = p * ((Math.Pow(1 + rate, months) - Math.Pow(1 + rate, m)) / (Math.Pow(1 + rate, months) - 1));
 
-            Console.WriteLine("Remaining Mortgage Payment:     {0,20:c}", remainingMortgagePayment);
+            return remainingMortgagePayment;
         }
         
+        static YearlyStatus[] RemainingMortgageLoanBalanceYearlyReport(int p, int n, int r)
+        {
+            double rate = r / 100.0 / 12;
+            double months = n * 12;
+
+            YearlyStatus[] result = new YearlyStatus[n];
+
+            for (int i = 0; i < n; i++)
+            {
+                int m = i * 12;
+
+                double monthlyMortgageAmount = p * (rate * Math.Pow(1 + rate, months) / (Math.Pow(1 + rate, months) - 1));
+                double t = monthlyMortgageAmount *  m;
+
+                result[i] = new YearlyStatus
+                {
+                    remainingMortgagePayment = RemainingMortgageLoanBalanceCalculator(p, n, r, m),
+                    totalAmountPaid = t,
+                    totalInterestPaid = t - p/n * i
+                };
+            }
+            
+            return result;
+        }
+
+    }
+
+    struct YearlyStatus
+    {
+        public double remainingMortgagePayment;
+        public double totalAmountPaid;
+        public double totalInterestPaid;
     }
 }
