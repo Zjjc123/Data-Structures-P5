@@ -78,6 +78,13 @@ namespace Lesson3ProgrammingProject
                         
                         break;
                     case 4:
+                        Console.WriteLine("Remaining Mortgage Loan Balance Calculator\n");
+                        int presentValue = GetUserInteger("Present value of the asset (in dollars)");
+                        int termsOfInvestment = GetUserInteger("Term of investment period (in years)");
+                        int estimatedYearlyInterest = GetUserInteger("Estimated yearly interest rate (as a percentage)");
+
+                        double FV = FutureValueOfAFixedAsset(presentValue, termsOfInvestment, estimatedYearlyInterest);
+                        Console.WriteLine("Future Value of Asset: {0,20:c}", FV);
                         break;
                     case 5:
                         break;
@@ -175,6 +182,19 @@ namespace Lesson3ProgrammingProject
             }
             
             return result;
+        }
+
+        static double FutureValueOfAFixedAsset(int PV, int n, int r)
+        {
+            double rate = r / 100.0 / 12;
+            double months = n * 12;
+            double FV = PV * Math.Pow(1 + rate, months);
+            return FV;
+        }
+
+        static double RetirementAccountValueEstimation(int c, int n, int r)
+        {
+            return 0.0;
         }
 
     }
