@@ -4,8 +4,8 @@
 //
 // Financial Planning Options
 //
-// written by {$NAME}
-// Data Structures, Period {$PERIOD}
+// written by Jason Zhang
+// Data Structures, Period 5
 //
 ////////////////////////////////////////////////////////////////////////
 
@@ -87,8 +87,24 @@ namespace Lesson3ProgrammingProject
                         Console.WriteLine("Future Value of Asset: {0,20:c}", FV);
                         break;
                     case 5:
+                        int[] info5 = GetInvestmentInfo();
+
+                        Investment investInfo1 = RetirementAccountValueEstimation(info5[0], info5[1], info5[2]);
+                        Console.WriteLine("Future Value: {0,20:c}", investInfo1.futureValue);
+                        Console.WriteLine("Interest Paid: {0,20:c}", investInfo1.interestPaid);
+
                         break;
                     case 6:
+                        int[] info6 = GetInvestmentInfo();
+
+                        Investment[] investInfo2 = RetirementAccountValueYearlyReport(info6[0], info6[1], info6[2]);
+
+                        Console.WriteLine("          Future Value          Total Amount Invested          Total Interest Paid");
+                        for (int i = 0; i < investInfo2.Length; i++)
+                        {
+                            Console.WriteLine("Year {0,2} {1,19:C} {2,25:C} {3,27:C}", i + 1, investInfo2[i].futureValue, investInfo2[i].totalPaid, investInfo2[i].interestPaid);
+                            Console.WriteLine();
+                        }
                         break;
                 }
 
@@ -124,6 +140,17 @@ namespace Lesson3ProgrammingProject
             int[] result = { amountBorrowed, termsOfMortgage, yearlyInterestRate };
             return result;
         }
+
+        static int[] GetInvestmentInfo()
+        {
+            int monthAmountToInvest = GetUserInteger("Monthly amount to invest (in dollars)");
+            int termsOfInvestment = GetUserInteger("Term of mortgage (in years)");
+            int yearlyInterestRate = GetUserInteger("Estimated yearly interest rate(as a percentage)");
+
+            int[] result = { monthAmountToInvest, termsOfInvestment, yearlyInterestRate };
+            return result;
+        }
+
 
         static void WaitToContinue()
         {
@@ -192,9 +219,33 @@ namespace Lesson3ProgrammingProject
             return FV;
         }
 
-        static double RetirementAccountValueEstimation(int c, int n, int r)
+        static Investment RetirementAccountValueEstimation(int c, int n, int r)
         {
-            return 0.0;
+            double rate = r / 100.0 / 12;
+            double months = n * 12;
+
+            double FV = c * (Math.Pow(1 + rate, months) - 1) / rate;
+            double TP = months * c;
+            double IP = FV - TP;
+
+            return new Investment
+            {
+                futureValue = FV,
+                interestPaid = IP,
+                totalPaid = TP
+            };
+        }
+
+        static Investment[] RetirementAccountValueYearlyReport(int c, int n, int r)
+        {
+            Investment[] result = new Investment[n];
+
+            for (int i = 1; i <= n; i++)
+            {
+                result[i-1] = RetirementAccountValueEstimation(c, i, r);
+            }
+
+            return result;
         }
 
     }
@@ -204,5 +255,12 @@ namespace Lesson3ProgrammingProject
         public double remainingMortgagePayment;
         public double totalAmountPaid;
         public double totalInterestPaid;
+    }
+
+    struct Investment
+    {
+        public double futureValue;
+        public double totalPaid;
+        public double interestPaid;
     }
 }
