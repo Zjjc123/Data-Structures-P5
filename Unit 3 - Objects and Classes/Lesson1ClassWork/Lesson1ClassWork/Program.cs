@@ -7,6 +7,11 @@ namespace Lesson1ClassWork
     //
     // Wild, Lemon, Grape, Orange, Cherry, Bell, Bar, Seven
 
+    enum SlotSymbol
+    {
+        Wild, Lemon, Grape, Orange, Cherry, Bell, Bar, Seven
+    }
+
     ////////////////////////////////////////////////////////
     // TODO: declare a struct name "SlotMachine" that 
     // includes the following fields:
@@ -14,7 +19,15 @@ namespace Lesson1ClassWork
     // a SlotSymbol type named "slot1"
     // a SlotSymbol type named "slot2"
     // a SlotSymbol type named "slot3"
-    // a double type named "credits"
+    // a int type named "credits"
+
+    struct SlotMachine
+    {
+        public SlotSymbol slot1;
+        public SlotSymbol slot2;
+        public SlotSymbol slot3;
+        public int credits;
+    }
 
     class Program
     {
@@ -24,6 +37,11 @@ namespace Lesson1ClassWork
             // TODO: initialize a new SlotMachine object and set its
             // credits to 1000.  create a "balance" variable for the
             // player and set its initial value to 10.
+
+            SlotMachine machine;
+            machine.credits = 1000;
+
+            int balance = 10;
 
             ////////////////////////////////////////////////////////
             // TODO: create a sentinel loop to play a virtual slot 
@@ -51,13 +69,54 @@ namespace Lesson1ClassWork
             // and added to the player balance and deducted from the
             // machine's credits.  If the slot machine's credits 
             // fall below 500, increase the credits back to 1000.
+            int bet = 0;
+            Random r = new Random();
             do
             {
-            } while ();
+                bet = GetUserInteger("Enter Bet: ");
+                
+                if (!(bet < 0 || bet > balance))
+                {
+                    int numSymbols = Enum.GetNames(typeof(SlotSymbol)).Length;
+                    machine.slot1 = (SlotSymbol)r.Next(numSymbols);
+                    machine.slot2 = (SlotSymbol)r.Next(numSymbols);
+                    machine.slot3 = (SlotSymbol)r.Next(numSymbols);
+
+                    balance -= bet;
+                    int payout = bet * Payout(machine.slot1, machine.slot2, machine.slot3);
+                    balance += payout;
+
+                    Console.WriteLine("Payout: {0:c}", payout);
+                    Console.WriteLine("Remaining balance: {0:c}", balance);
+                } else
+                {
+                    if (bet != -1)
+                    {
+                        Console.WriteLine("Enter valid bet from greater than 0 to less than balance!");
+                    }
+                }
+            } while (bet != -1);
             ////////////////////////////////////////////////////////
             // TODO: show the player's closing balance
+            Console.WriteLine("Game Exited");
+            Console.WriteLine("Final balance: {0:c}", balance);
+
             Console.Out.WriteLine("Hit enter key to close...");
             Console.In.ReadLine();
+        }
+
+        static int GetUserInteger(string prompt)
+        {
+            int i = 0;
+
+            Console.WriteLine(prompt);
+
+            while (!int.TryParse(Console.ReadLine(), out i))
+            {
+                Console.WriteLine("Invalid Number!");
+            }
+
+            return i;
         }
 
         ////////////////////////////////////////////////////////
@@ -73,6 +132,42 @@ namespace Lesson1ClassWork
         // the "Wild" symbol matches all other symbols
         public static int Payout(SlotSymbol s1, SlotSymbol s2, SlotSymbol s3)
         {
+            int num1 = (int)s1;
+            int num2 = (int)s2;
+            int num3 = (int)s3;
+
+            int[] slots = { num1, num2, num3 };
+
+            int max = Math.Max(Math.Max(num1, num2), num3);
+
+            for (int i = 0; i < slots.Length; i++)
+            {
+                if (slots[i] == 0)
+                {
+                    slots[i] = max;
+                }
+            }
+
+            if (slots[0] == slots[1] && slots[1] != slots[2])
+            {
+                return slots[0];
+            }
+
+            if (slots[1] == slots[2] && slots[1] != slots[0])
+            {
+                return slots[1];
+            }
+
+            if (slots[0] == slots[2] && slots[0] != slots[1])
+            {
+                return slots[2];
+            }
+
+            if (slots[0] == slots[1] && slots[1] == slots[2])
+            {
+                return (int)Math.Pow(slots[0], 3);
+            }
+
             return 0;
         }
     }
